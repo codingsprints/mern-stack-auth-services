@@ -1,0 +1,18 @@
+import express from 'express';
+import { configENV } from './config/config';
+import authRouter from './routes/authRouter';
+
+const app = express();
+app.use(express.static('public'));
+app.use(express.json());
+
+console.log('env -->', configENV.port);
+
+app.get('/', async (req, res) => {
+  console.log('hello');
+  res.send('Server is running!');
+});
+
+app.use(`${configENV.baseUrl}/auth`, authRouter);
+
+export default app;
