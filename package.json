@@ -14,6 +14,15 @@
   "author": "parth dangaroshiya",
   "type": "commonjs",
   "main": "src/server.ts",
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{json,css,md,mjs}": [
+      "prettier --write"
+    ]
+  },
   "scripts": {
     "test:watch": "jest --passWithNoTests --watch --coverage --all --runInBand",
     "test": "jest --no-cache --coverage --all --runInBand",
@@ -38,6 +47,7 @@
     "v8-compile-cache-lib": "^3.0.1",
     "yn": "^3.1.1"
   },
+  
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@types/express": "^5.0.3",
