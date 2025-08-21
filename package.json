@@ -48,6 +48,7 @@
     "typeorm": "^0.3.26",
     "undici-types": "^7.10.0",
     "v8-compile-cache-lib": "^3.0.1",
+    "winston": "^3.17.0",
     "yn": "^3.1.1"
   },
   "devDependencies": {
@@ -56,6 +57,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.2.1",
     "@types/supertest": "^6.0.3",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
     "dotenv": "^17.2.1",

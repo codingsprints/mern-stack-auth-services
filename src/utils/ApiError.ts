@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { HttpError } from 'http-errors';
+import logger from '../config/logger';
 
 export const ApiErrorHandler = (
   error: HttpError,
   res: Response,
   req: Request,
 ): void => {
-  console.log(error.message);
+  logger.error(error.message);
   const statusCode = error.statusCode || error.status || 500;
   res.status(statusCode).json({
     error: [

@@ -4,15 +4,24 @@ import { Roles } from '../Types';
 import { RegisterDataType, RegisterResObjectType } from '../Types/auth';
 import { registerUserDto } from '../Dto/userDto';
 import { ApiSuccessHandler } from '../utils/ApiSuccess';
+import logger from '../config/logger';
 
 export const registerUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  console.log(req.body);
-
   const { firstName, lastName, email, password, userName } = req.body;
+
+  logger.debug('New request to register a user', {
+    userName,
+    firstName,
+    lastName,
+    email,
+    password: '******',
+  });
+
+  logger.info('register function calling');
 
   try {
     const user = await CreateUserService({
@@ -23,6 +32,7 @@ export const registerUser = async (
       password,
       role: Roles.CUSTOMER,
     });
+    logger.info('User has been registered', { id: user.id });
 
     const resObj: RegisterDataType = { ...user, password: '' };
 

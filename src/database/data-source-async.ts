@@ -2,8 +2,10 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { configENV } from '../config/config';
 import createHttpError from 'http-errors';
+import logger from '../config/logger';
 
 export const AppDataSource = async (): Promise<DataSource | undefined> => {
+  logger.info('database app datasource calling');
   try {
     // Create the DataSource instance
     const dataSource = new DataSource({
@@ -14,7 +16,7 @@ export const AppDataSource = async (): Promise<DataSource | undefined> => {
       password: configENV.dbPassword,
       database: configENV.dbDatabase,
       synchronize: true, // 👈 here In production false
-      logging: true,
+      logging: false,
       entities: ['src/database/entities/*.{ts,js}'],
       migrations: ['src/database/migrations/*.{ts,js}'],
       ssl: false,
@@ -23,7 +25,7 @@ export const AppDataSource = async (): Promise<DataSource | undefined> => {
     return dataSource;
   } catch (error) {
     if (error instanceof Error) {
-      console.log('Error setting up data source:', error.message);
+      logger.error('Error setting up data source:', error.message);
     } else {
       throw createHttpError(500, 'Error setting up data source');
     }
