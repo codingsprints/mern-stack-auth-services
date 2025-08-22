@@ -1,6 +1,7 @@
 import express from 'express';
 import { configENV } from './config/config';
 import authRouter from './routes/authRouter';
+import { globalErrorHandler } from './middleware/globalErrorHandler';
 
 const app = express();
 app.use(express.static('public'));
@@ -14,5 +15,7 @@ app.get('/', async (req, res) => {
 });
 
 app.use(`${configENV.baseUrl}/auth`, authRouter);
+
+app.use(globalErrorHandler);
 
 export default app;

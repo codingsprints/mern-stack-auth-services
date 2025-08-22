@@ -1,6 +1,8 @@
 import { RegisterDataType, UserData } from '../Types/auth';
 import { getUserRepository } from '../utils/common';
 import createHttpError from 'http-errors';
+import bcrypt from 'bcryptjs';
+import { saltRounds } from '../utils/constant';
 
 export const CreateUserService = async ({
   userName,
@@ -29,14 +31,14 @@ export const CreateUserService = async ({
   }
 
   //hash password
-  //   const hashPassword = await bcrypt.hash(password, saltRounds);
+  const hashPassword = await bcrypt.hash(password, saltRounds);
   try {
     const user = await userRepository.save({
       userName,
       firstName,
       lastName,
       email,
-      password,
+      password: hashPassword,
       role,
     });
     return user;
