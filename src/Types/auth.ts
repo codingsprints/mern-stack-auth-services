@@ -9,6 +9,10 @@ export interface UserData {
   role: Roles;
 }
 
+export interface UserCreateType extends UserData {
+  id: number;
+}
+
 export interface RegisterDataType {
   id: number;
   userName: string;
@@ -36,4 +40,8 @@ export interface RegisterResObjectType {
     registerUserDto: RegisterUserDtoType;
   };
   error: boolean;
+}
+
+export interface UserCreateType extends UserData {
+  id: number;
 }

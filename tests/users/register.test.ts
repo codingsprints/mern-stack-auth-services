@@ -4,6 +4,8 @@ import request from 'supertest';
 import { AppDataSourceInitialize } from '../../src/utils/common';
 import { Roles } from '../../src/Types';
 import { User } from '../../src/database/entities/User';
+import { isJwt } from '../utils';
+import { RefreshToken } from '../../src/database/entities/RefreshToken';
 
 describe('POST /pizza-app/auth-service/api/v1/auth/register', () => {
   let connection: DataSource;
@@ -39,6 +41,8 @@ describe('POST /pizza-app/auth-service/api/v1/auth/register', () => {
       //Act
       const response = await request(app).post(baseUrl).send(mockUser);
 
+      console.log('----res', response.body, response.statusCode);
+
       //Asserts
       expect(response.statusCode).toBe(201);
       expect(response.body.message).toBe('user created!!');
@@ -66,6 +70,44 @@ describe('POST /pizza-app/auth-service/api/v1/auth/register', () => {
       expect(users[0]?.password).not.toBe(mockUser.password);
       expect(users[0]?.password).toHaveLength(60);
       expect(users[0]?.password).toMatch(/^\$2[a|b]\$\d+\$/);
+    });
+    it('should return valid access and refresh tokens in cookies', async () => {
+      //Arrage
+      const mockUser = {
+        userName: 'parth731',
+        firstName: 'Parth',
+        lastName: 'Dangroshiya',
+        email: 'BxPnM@example.com',
+        password: 'Parth@123',
+      };
+      const response = await request(app).post(baseUrl).send(mockUser);
+
+      // Ensure cookies are treated as an array
+      const cookies = Array.isArray(response.headers['set-cookie'])
+        ? response.headers['set-cookie']
+        : [response.headers['set-cookie'] || ''];
+
+      const accessTokenCookie = cookies.find((cookie: string) =>
+        cookie.startsWith('accessToken='),
+      );
+      const refreshTokenCookie = cookies.find((cookie: string) =>
+        cookie.startsWith('refreshToken='),
+      );
+
+      // Extracting token values from the cookies
+      const accessToken = accessTokenCookie?.split('=')[1]?.split(';')[0];
+      const refreshToken = refreshTokenCookie?.split('=')[1]?.split(';')[0];
+
+      // Assertions
+      expect(accessToken).toBeDefined();
+      expect(refreshToken).toBeDefined();
+      expect(isJwt(accessToken)).toBeTruthy();
+      expect(isJwt(refreshToken)).toBeTruthy();
+
+      // Checking persistence of the refresh token
+      const refreshTokenRepo = connection.getRepository(RefreshToken);
+      const tokens = await refreshTokenRepo.find();
+      expect(tokens).toHaveLength(1);
     });
   });
 

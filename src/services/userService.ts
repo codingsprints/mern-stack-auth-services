@@ -42,12 +42,15 @@ export const CreateUserService = async ({
       role,
     });
     return user;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    const customError = createHttpError(
-      500,
-      'failed to store the data in the database',
-    );
-    throw customError;
+    if (error instanceof Error) {
+      throw createHttpError(500, error.message);
+    } else {
+      const customError = createHttpError(
+        500,
+        'failed to store the data in the database',
+      );
+      throw customError;
+    }
   }
 };
