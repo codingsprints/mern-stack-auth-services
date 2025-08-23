@@ -1,4 +1,5 @@
 import { Roles } from '.';
+import { Request } from 'express';
 
 export interface UserData {
   userName: string;
@@ -42,6 +43,61 @@ export interface RegisterResObjectType {
   error: boolean;
 }
 
-export interface UserCreateType extends UserData {
+/** login */
+export interface LoginUserType {
   id: number;
+  userName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: Roles;
+  password: string;
+}
+
+export interface LoginUserRequest extends Request {
+  body: LoginUserType;
+}
+
+export interface LoginDtoType {
+  id: number;
+  fullName: string;
+  userName: string;
+  email: string;
+  role: string;
+}
+
+export interface LoginResObjectType {
+  code: number;
+  status: string;
+  message: string;
+  data: {
+    loginUserDto: LoginDtoType;
+  };
+  error: boolean;
+}
+
+// refresh token
+export interface RefreshTokenType {
+  id: number;
+  userName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: Roles;
+  password: string;
+}
+
+export interface RefreshTokenDtoType {
+  id: number;
+  userName: string;
+}
+
+export interface RefreshTokenResObjectType {
+  code: number;
+  status: string;
+  message: string;
+  data: {
+    refreshTokenDto: RefreshTokenDtoType;
+  };
+  error: boolean;
 }

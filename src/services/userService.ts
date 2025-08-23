@@ -3,6 +3,7 @@ import { getUserRepository } from '../utils/common';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcryptjs';
 import { saltRounds } from '../utils/constant';
+import { User } from '../database/entities/User';
 
 export const CreateUserService = async ({
   userName,
@@ -53,4 +54,39 @@ export const CreateUserService = async ({
       throw customError;
     }
   }
+};
+
+export const findByEmailWithPasswordService = async (
+  email: string,
+  userName: string,
+): Promise<User> => {
+  // sonarqube-ignore-line
+  // const userRepository = AppDataSource.getRepository(User);
+  const userRepository = await getUserRepository();
+  const user = await userRepository.findOne({
+    where: { email: email, userName: userName },
+    select: [
+      'id',
+      'userName',
+      'firstName',
+      'lastName',
+      'email',
+      'role',
+      'password',
+    ],
+    // relations: { tenant: true },
+  });
+  if (!user) {
+    const error = createHttpError(404, 'user does not exist!');
+    throw error;
+  }
+  return user;
+};
+
+export const findByIdService = async (id: number): Promise<User | null> => {
+  const userRepository = await getUserRepository();
+
+  const user = await userRepository.findOne({ where: { id } });
+
+  return user;
 };

@@ -1,9 +1,16 @@
 import { Response } from 'express';
-import { RegisterResObjectType } from '../Types/auth';
+import {
+  LoginResObjectType,
+  RefreshTokenResObjectType,
+  RegisterResObjectType,
+} from '../Types/auth';
 
 export const ApiSuccessHandler = (
   res: Response,
-  responseObject: RegisterResObjectType,
+  responseObject:
+    | RegisterResObjectType
+    | LoginResObjectType
+    | RefreshTokenResObjectType,
 ): void => {
   res.status(responseObject.code).json({
     status: responseObject.code,
