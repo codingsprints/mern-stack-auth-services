@@ -1,8 +1,10 @@
 import { Response } from 'express';
 import {
   LoginResObjectType,
+  LogoutResObjectType,
   RefreshTokenResObjectType,
   RegisterResObjectType,
+  SelfResObjectType,
 } from '../Types/auth';
 
 export const ApiSuccessHandler = (
@@ -10,7 +12,9 @@ export const ApiSuccessHandler = (
   responseObject:
     | RegisterResObjectType
     | LoginResObjectType
-    | RefreshTokenResObjectType,
+    | RefreshTokenResObjectType
+    | SelfResObjectType
+    | LogoutResObjectType,
 ): void => {
   res.status(responseObject.code).json({
     status: responseObject.code,

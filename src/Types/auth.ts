@@ -101,3 +101,55 @@ export interface RefreshTokenResObjectType {
   };
   error: boolean;
 }
+
+/** self */
+export interface SelfDataType {
+  id: number;
+  userName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: Roles;
+  password: string;
+  //   tenant: IGetAllTenantsDto | null;
+}
+
+export interface SelfDtoType {
+  id: number;
+  fullName: string;
+  userName: string;
+  email: string;
+  role: string;
+  //   tenant: IGetAllTenantsDto | null;
+}
+
+export interface SelfResObjectType {
+  code: number;
+  status: string;
+  message: string;
+  data: {
+    selfDto: SelfDtoType;
+  };
+  error: boolean;
+}
+
+// logout user
+export interface LogoutType {
+  id: number;
+  role: Roles;
+}
+
+export interface LogoutDtoType {
+  id: number;
+  role: Roles;
+}
+
+export interface LogoutResObjectType {
+  code: number;
+  status: string;
+  message: string;
+  data: {
+    logoutDto: LogoutDtoType;
+  };
+  error: boolean;
+}

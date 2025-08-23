@@ -36,6 +36,7 @@ interface Config {
   accessTokenIssuer: string;
   refreshTokenExpiresIn: string;
   accessTokenExpiresIn: string;
+  jwksUri: string;
 
   //other
   privatekey: string;
@@ -67,6 +68,8 @@ export const configENV: Config = {
   accessTokenIssuer: process.env.ACCESS_TOKEN_ISSUER ?? 'Auth-service',
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN ?? '1y',
   accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN ?? '1h',
+  jwksUri:
+    process.env.JWKS_URI ?? 'http://localhost:5501/.well-known/jwks.json',
 
   // others
   privatekey: process.env.PRIVATE_KEY ?? '',

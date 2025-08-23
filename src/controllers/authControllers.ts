@@ -8,11 +8,20 @@ import { AuthRequest, Roles } from '../Types';
 import {
   LoginResObjectType,
   LoginUserRequest,
+  LogoutResObjectType,
+  LogoutType,
   RefreshTokenResObjectType,
   RegisterDataType,
   RegisterResObjectType,
+  SelfResObjectType,
 } from '../Types/auth';
-import { loginUserDto, refreshTokenDto, registerUserDto } from '../Dto/userDto';
+import {
+  loginUserDto,
+  logoutDto,
+  refreshTokenDto,
+  registerUserDto,
+  selfUserDto,
+} from '../Dto/userDto';
 import { ApiSuccessHandler } from '../utils/ApiSuccess';
 import logger from '../config/logger';
 import { JwtPayload } from 'jsonwebtoken';
@@ -231,6 +240,54 @@ export const refresh = async (
     };
 
     ApiSuccessHandler(res, refreshTokenResObject);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const self = async (req: AuthRequest, res: Response): Promise<void> => {
+  //req.auth.id
+
+  const user = await findByIdService(Number(req.auth.sub));
+
+  const selfResObject: SelfResObjectType = {
+    code: 200,
+    status: 'success',
+    message: 'fetch user data successfully',
+    data: selfUserDto(user!),
+    error: false,
+  };
+
+  ApiSuccessHandler(res, selfResObject);
+};
+
+export const logout = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    await deleteRefreshToken(Number(req.auth.id));
+
+    logger.info('Refresh Token has been deleted', { id: req.auth.id });
+    logger.info('User has been logout', { id: req.auth.sub });
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
+    const resObj: LogoutType = {
+      id: Number(req.auth.id),
+      role: req.auth.role as Roles,
+    };
+
+    const logoutResObject: LogoutResObjectType = {
+      code: 200,
+      status: 'success',
+      message: 'loggout successfully!!!',
+      data: logoutDto(resObj),
+      error: false,
+    };
+
+    ApiSuccessHandler(res, logoutResObject);
   } catch (error) {
     next(error);
   }
