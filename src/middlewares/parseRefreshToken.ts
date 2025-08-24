@@ -1,7 +1,7 @@
 import { expressjwt } from 'express-jwt';
 import { Request } from 'express';
+import { AuthCookies } from '../types';
 import { configENV } from '../config/config';
-import { AuthCookies } from '../Types';
 
 export default expressjwt({
   secret: configENV.refreshTokenSecret,

@@ -1,20 +1,40 @@
 import { Response } from 'express';
 import {
+  DeleteUserResObject,
+  GetAllUsersResObject,
+  GetUserByIdResObject,
   LoginResObjectType,
   LogoutResObjectType,
   RefreshTokenResObjectType,
   RegisterResObjectType,
   SelfResObjectType,
-} from '../Types/auth';
+  UpdateUserResObjectType,
+} from '../types/auth';
+import {
+  ITenantDeleteResObject,
+  ITenantGetAllResObject,
+  ITenantGetByIdResObject,
+  ITenantCreateResObject,
+  ITenantUpdateResObject,
+} from '../types/tenantsType';
 
 export const ApiSuccessHandler = (
   res: Response,
   responseObject:
     | RegisterResObjectType
     | LoginResObjectType
-    | RefreshTokenResObjectType
     | SelfResObjectType
-    | LogoutResObjectType,
+    | RefreshTokenResObjectType
+    | LogoutResObjectType
+    | ITenantCreateResObject
+    | ITenantGetAllResObject
+    | ITenantGetByIdResObject
+    | ITenantDeleteResObject
+    | ITenantUpdateResObject
+    | UpdateUserResObjectType
+    | GetAllUsersResObject
+    | DeleteUserResObject
+    | GetUserByIdResObject,
 ): void => {
   res.status(responseObject.code).json({
     status: responseObject.code,

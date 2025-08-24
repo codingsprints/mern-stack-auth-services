@@ -1,10 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
-import {
-  CreateUserService,
-  findByEmailWithPasswordService,
-  findByIdService,
-} from '../services/userService';
-import { AuthRequest, Roles } from '../Types';
+import { NextFunction, Response } from 'express';
 import {
   LoginResObjectType,
   LoginUserRequest,
@@ -13,16 +7,14 @@ import {
   RefreshTokenResObjectType,
   RegisterDataType,
   RegisterResObjectType,
+  RegisterUserRequest,
   SelfResObjectType,
-} from '../Types/auth';
+} from '../types/auth';
 import {
-  loginUserDto,
-  logoutDto,
-  refreshTokenDto,
-  registerUserDto,
-  selfUserDto,
-} from '../Dto/userDto';
-import { ApiSuccessHandler } from '../utils/ApiSuccess';
+  CreateUserService,
+  findByEmailWithPasswordService,
+  findByIdService,
+} from '../services/userService';
 import logger from '../config/logger';
 import { JwtPayload } from 'jsonwebtoken';
 import {
@@ -31,23 +23,33 @@ import {
   generateRefreshToken,
   persistRefreshToken,
 } from '../services/tokenService';
-import { setResponseCookies } from '../utils/auth';
-import { validationResult } from 'express-validator';
-import { comparePassword } from '../services/CredentialService';
 import createHttpError from 'http-errors';
+import { comparePassword } from '../services/CredentialService';
+import { setResponseCookies } from '../utils/auth.utils';
+import { ApiSuccessHandler } from '../utils/ApiSuccess';
+import {
+  loginUserDto,
+  logoutDto,
+  refreshTokenDto,
+  registerUserDto,
+  selfUserDto,
+} from '../Dto/UserDto';
+import { AuthRequest, Roles } from '../types';
+import { validationResult } from 'express-validator';
 
 export const registerUser = async (
-  req: Request,
+  req: RegisterUserRequest,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  // Validation
+
   const result = validationResult(req);
   if (!result.isEmpty()) {
     res.status(400).json({ errors: result.array() });
     return;
   }
   const { firstName, lastName, email, password, userName } = req.body;
-
   logger.debug('New request to register a user', {
     userName,
     firstName,
@@ -57,7 +59,6 @@ export const registerUser = async (
   });
 
   logger.info('register function calling');
-
   try {
     const user = await CreateUserService({
       userName,
@@ -67,9 +68,9 @@ export const registerUser = async (
       password,
       role: Roles.CUSTOMER,
     });
+
     logger.info('User has been registered', { id: user.id });
 
-    //jwt functionality start
     const payload: JwtPayload = {
       sub: String(user?.id),
       role: user.role,
@@ -77,6 +78,7 @@ export const registerUser = async (
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      tenant: user.tenant ? String(user.tenant.id) : '',
     };
 
     const accessToken = await generateAccessToken(payload);
@@ -90,7 +92,8 @@ export const registerUser = async (
     });
 
     setResponseCookies(res, accessToken, refreshToken);
-    //jwt functionality end
+
+    logger.info('token has been created');
 
     const resObj: RegisterDataType = { ...user, password: '' };
 
@@ -149,6 +152,7 @@ export const loginUser = async (
       firstName: existUser.firstName,
       lastName: existUser.lastName,
       email: existUser.email,
+      tenant: existUser.tenant ? String(existUser.tenant.id) : '',
     };
 
     const accessToken = await generateAccessToken(payload);
@@ -179,6 +183,22 @@ export const loginUser = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const self = async (req: AuthRequest, res: Response): Promise<void> => {
+  //req.auth.id
+
+  const user = await findByIdService(Number(req.auth.sub));
+
+  const selfResObject: SelfResObjectType = {
+    code: 200,
+    status: 'success',
+    message: 'fetch user data successfully',
+    data: selfUserDto(user!),
+    error: false,
+  };
+
+  ApiSuccessHandler(res, selfResObject);
 };
 
 export const refresh = async (
@@ -243,22 +263,6 @@ export const refresh = async (
   } catch (error) {
     next(error);
   }
-};
-
-export const self = async (req: AuthRequest, res: Response): Promise<void> => {
-  //req.auth.id
-
-  const user = await findByIdService(Number(req.auth.sub));
-
-  const selfResObject: SelfResObjectType = {
-    code: 200,
-    status: 'success',
-    message: 'fetch user data successfully',
-    data: selfUserDto(user!),
-    error: false,
-  };
-
-  ApiSuccessHandler(res, selfResObject);
 };
 
 export const logout = async (

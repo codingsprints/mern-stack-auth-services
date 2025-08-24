@@ -1,5 +1,6 @@
 import { Schema } from 'express-validator';
-import { Roles } from '../Types';
+import { Roles } from '../types';
+import { UpdateUserRequest } from '../types/auth';
 
 // Common Validators
 export const userNameValidator: Schema = {
@@ -97,6 +98,23 @@ export const roleValidator: Schema = {
     isIn: {
       options: [Object.values(Roles)],
       errorMessage: `Role must be one of ${Object.values(Roles).join(', ')}`,
+    },
+  },
+};
+
+export const tenantIdUpdateValidator: Schema = {
+  tenantId: {
+    errorMessage: 'Tenant id is required!',
+    trim: true,
+    custom: {
+      options: async (value: string, { req }) => {
+        const role = (req as UpdateUserRequest).body.role;
+        if (role === 'admin') {
+          return true;
+        } else {
+          return !!value;
+        }
+      },
     },
   },
 };

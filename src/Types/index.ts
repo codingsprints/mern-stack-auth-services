@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export enum Roles {
   CUSTOMER = 'customer',
   ADMIN = 'admin',

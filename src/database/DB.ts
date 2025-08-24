@@ -1,11 +1,11 @@
 import createHttpError from 'http-errors';
-// import { AppDataSource } from './data-source';
-import { AppDataSourceInitialize } from '../utils/common';
 import logger from '../config/logger';
+import { AppDataSourceInitialize } from '../utils/common';
 
 export const startApp = async (): Promise<void> => {
   try {
-    // AppDataSource.initialize();
+    // sonarqube-ignore-line
+    // await AppDataSource.initialize();
     await AppDataSourceInitialize();
     logger.info('✅ Database connected successfully!');
   } catch (error) {

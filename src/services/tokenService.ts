@@ -1,19 +1,17 @@
 import createHttpError from 'http-errors';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import { RefreshToken } from '../database/entities/RefreshToken';
-import logger from '../config/logger';
-import { configENV } from '../config/config';
-import { NODE_ENV_VAL } from '../utils/constant';
-import { getFileFromS3 } from './s3Service';
-import { UserCreateType } from '../Types/auth';
 import { getRefreshTokenRepository, isLeapYear } from '../utils/common';
+import { configENV } from '../config/config';
+import { UserCreateType } from '../types/auth';
+import { getFileFromS3 } from './s3Service';
+import { NODE_ENV_VAL } from '../utils/constant';
+import logger from '../config/logger';
 
 export const generateAccessToken = async (
   payload: JwtPayload,
 ): Promise<string> => {
   let privateKey: string | undefined;
-
-  console.log('--------nodeEnv', configENV.nodeEnv);
 
   try {
     if (configENV.nodeEnv !== NODE_ENV_VAL.TEST) {
@@ -32,7 +30,7 @@ export const generateAccessToken = async (
         throw createHttpError(500, 'Private key not found in S3');
       }
     } else if (configENV.privatekey) {
-      // privateKey = configEnv.privatekey.replace(/\\n/g, '\n');
+      // privateKey = configENV.privatekey.replace(/\\n/g, '\n');
       privateKey = configENV.privatekey;
     } else {
       throw createHttpError(500, 'Private key not found in configuration');
@@ -71,7 +69,9 @@ export const persistRefreshToken = async (
   user: UserCreateType,
 ): Promise<RefreshToken> => {
   const MS_IN_YEAR = isLeapYear(new Date().getFullYear());
-
+  // sonarqube-ignore-line
+  // const refreshTokenRepository: Repository<RefreshToken> =
+  // AppDataSource.getRepository(RefreshToken);
   const refreshTokenRepository = await getRefreshTokenRepository();
   const newRefreshToken = await refreshTokenRepository.save({
     user: user,
@@ -82,6 +82,9 @@ export const persistRefreshToken = async (
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const deleteRefreshToken = async (tokenId: number) => {
+  // sonarqube-ignore-line
+  // const refreshTokenRepository: Repository<RefreshToken> =
+  //   AppDataSource.getRepository(RefreshToken);
   const refreshTokenRepository = await getRefreshTokenRepository();
   return refreshTokenRepository.delete({ id: tokenId });
 };

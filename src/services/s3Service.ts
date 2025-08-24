@@ -18,7 +18,6 @@ export const getFileFromS3 = async (
     return new Promise((resolve, reject) => {
       const chunks: Buffer[] = [];
       readable.on('data', (chunk) => {
-        console.log(chunk.toString('utf-8'));
         chunks.push(chunk);
       });
       readable.on('end', () =>

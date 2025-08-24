@@ -1,9 +1,9 @@
 import { expressjwt } from 'express-jwt';
 import { Request } from 'express';
+import { AuthCookies, IRefreshTokenPayload } from '../types';
 import logger from '../config/logger';
 import { configENV } from '../config/config';
 import { getRefreshTokenRepository } from '../utils/common';
-import { AuthCookies, IRefreshTokenPayload } from '../Types';
 
 export default expressjwt({
   secret: configENV.refreshTokenSecret,

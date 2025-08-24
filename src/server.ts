@@ -1,15 +1,16 @@
 import app from './app';
-import { configENV } from './config/config';
-import logger from './config/logger';
 import { startApp } from './database/DB';
+import logger from './config/logger';
+import { configENV } from './config/config';
+
+const PORT = configENV.port || 3000;
 
 const startServer = async () => {
-  const PORT = configENV.port || 5001;
   try {
     logger.info('🚀 Starting application...');
     await startApp();
     logger.info('Database connected successfully!');
-    app.listen(configENV.port, () => {
+    app.listen(PORT, async () => {
       logger.info(`🛠️ Application ready...Server running on port: ${PORT}`);
     });
   } catch (error) {

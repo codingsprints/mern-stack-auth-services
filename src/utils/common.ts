@@ -1,8 +1,9 @@
 import createHttpError from 'http-errors';
-import { User } from '../database/entities/User';
-import { DataSource, Repository } from 'typeorm';
 import { AppDataSource } from '../database/data-source-async';
+import { DataSource, Repository } from 'typeorm';
+import { User } from '../database/entities/User';
 import { RefreshToken } from '../database/entities/RefreshToken';
+import { Tenant } from '../database/entities/Tenant';
 
 export const isLeapYear = (year: number): number => {
   // A leap year satisfies the following conditions
@@ -52,4 +53,18 @@ export const getRefreshTokenRepository = async (): Promise<
   /* sonarqube-ignore-end */
   await dataSource.initialize();
   return dataSource.getRepository(RefreshToken);
+};
+
+export const getTenantRepository = async (): Promise<Repository<Tenant>> => {
+  const dataSource = await AppDataSource();
+  /* sonarqube-ignore-start */
+  if (!dataSource) {
+    throw createHttpError(
+      500,
+      'DataSource is undefined from getTenantRepository',
+    );
+  }
+  /* sonarqube-ignore-end */
+  await dataSource.initialize();
+  return dataSource.getRepository(Tenant);
 };
