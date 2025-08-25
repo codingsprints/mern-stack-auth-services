@@ -33,7 +33,13 @@
     "format:fix": "prettier . --write",
     "lint": "eslint",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "typeorm": "npm run build && npx typeorm-ts-node-esm -d dist/database/datasourcemigration.js",
+    "migration:show": "npm run typeorm migration:show",
+    "migration:create": "typeorm-ts-node-commonjs migration:create",
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate",
+    "migration:run": "typeorm-ts-node-commonjs migration:run"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.873.0",
