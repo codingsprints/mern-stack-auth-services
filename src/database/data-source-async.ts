@@ -26,8 +26,8 @@ export const AppDataSource = async (): Promise<DataSource | undefined> => {
       // synchronize: !configENV.isProduction, // 👈 here
       synchronize: true, // 👈 here
       logging: false,
-      entities: ['dist/src/database/entities/*.{ts,js}'],
-      migrations: ['dist/src/database/migrations/*.{ts,js}'],
+      entities: ['src/database/entities/*.{ts,js}'],
+      migrations: ['src/database/migrations/*.{ts,js}'],
       /* dist folder in use only developing mode build `npm build` then use it `npm start`*/
       ssl:
         configENV.nodeEnv === 'test'

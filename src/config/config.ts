@@ -55,6 +55,7 @@ interface Config {
   awsS3BucketName: string;
   awsS3RdsSSL: string;
   awsS3URI: string;
+  awsS3JWKS: string;
 }
 
 export const configENV: Config = {
@@ -95,4 +96,5 @@ export const configENV: Config = {
   awsS3BucketName: process.env.AWS_S3_BUCKET_NAME!,
   awsS3RdsSSL: process.env.AWS_RDS_SSL! ?? '',
   awsS3URI: process.env.AWS_S3_URI!,
+  awsS3JWKS: process.env.AWS_S3_JWKS! ?? '',
 };
