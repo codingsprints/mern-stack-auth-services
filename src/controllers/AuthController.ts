@@ -33,7 +33,7 @@ import {
   refreshTokenDto,
   registerUserDto,
   selfUserDto,
-} from '../Dto/UserDto';
+} from '../Dto/userDto';
 import { AuthRequest, Roles } from '../types';
 import { validationResult } from 'express-validator';
 
