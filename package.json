@@ -27,7 +27,7 @@
     "test:watch": "jest --passWithNoTests --watch --coverage --all --runInBand",
     "test": "jest --no-cache --coverage --all --runInBand",
     "build": "tsc",
-    "start": "ts-node dist/src/server.js",
+    "start": "ts-node dist/server.js",
     "dev": "nodemon --legacy-watch src/server.ts",
     "format:check": "prettier . --check",
     "format:fix": "prettier . --write",
