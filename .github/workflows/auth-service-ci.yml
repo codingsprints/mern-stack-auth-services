@@ -75,7 +75,7 @@ jobs:
     # needs: sonar-cloud-scan
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: pinnacle731/mern-space-auth-service-prod # pinnacle731/mern-stack-auth-service:build-2
+      IMAGE_NAME: codingsprints/mern-space-auth-service-prod # codingsprints/mern-stack-auth-service:build-2
       IMAGE_TAG: build-${{ github.run_number }}
     if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'|| github.ref == 'refs/heads/production') && github.event_name == 'push'
     steps:
