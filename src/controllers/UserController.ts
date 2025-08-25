@@ -25,7 +25,7 @@ import {
   getUserByIdDto,
   registerUserDto,
   updateUserDto,
-} from '../Dto/UserDto';
+} from '../Dto/userDto';
 import { ApiSuccessHandler } from '../utils/ApiSuccess';
 import logger from '../config/logger';
 
