@@ -1,6 +1,6 @@
 import { expressjwt } from 'express-jwt';
 import { Request } from 'express';
-import { AuthCookies, IRefreshTokenPayload } from '../types';
+import { AuthCookies, IRefreshTokenPayload } from '../Types';
 import logger from '../config/logger';
 import { configENV } from '../config/config';
 import { getRefreshTokenRepository } from '../utils/common';

@@ -7,7 +7,7 @@ import {
   ITenantDeleteResObject,
   ITenantUpdateResObject,
   TenantQueryParams,
-} from '../types/tenantsType';
+} from '../Types/tenantsType';
 import {
   TenantCreateService,
   TenantDeleteService,

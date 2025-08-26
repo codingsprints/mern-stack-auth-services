@@ -3,7 +3,7 @@ import {
   IGetAllTenantsDto,
   ITenantCreateDto,
   IUpdateTenantDto,
-} from '../types/tenantsType';
+} from '../Types/tenantsType';
 
 export const tenantCreateDto = (
   tenant: ITenantCreateDto,

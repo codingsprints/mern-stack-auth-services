@@ -19,7 +19,7 @@ import {
   UpdateUserResObjectType,
   UpdateUserType,
   UserQueryParams,
-} from '../types/auth';
+} from '../Types/auth';
 import {
   getAllUsersDto,
   getUserByIdDto,

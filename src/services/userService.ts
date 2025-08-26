@@ -7,7 +7,7 @@ import {
   RegisterDataType,
   UserData,
   UserQueryParams,
-} from '../types/auth';
+} from '../Types/auth';
 import { Brackets } from 'typeorm';
 import { getUserRepository } from '../utils/common';
 

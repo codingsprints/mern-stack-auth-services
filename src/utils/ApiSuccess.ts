@@ -9,14 +9,14 @@ import {
   RegisterResObjectType,
   SelfResObjectType,
   UpdateUserResObjectType,
-} from '../types/auth';
+} from '../Types/auth';
 import {
   ITenantDeleteResObject,
   ITenantGetAllResObject,
   ITenantGetByIdResObject,
   ITenantCreateResObject,
   ITenantUpdateResObject,
-} from '../types/tenantsType';
+} from '../Types/tenantsType';
 
 export const ApiSuccessHandler = (
   res: Response,

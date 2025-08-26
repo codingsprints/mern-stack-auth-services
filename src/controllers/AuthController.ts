@@ -9,7 +9,7 @@ import {
   RegisterResObjectType,
   RegisterUserRequest,
   SelfResObjectType,
-} from '../types/auth';
+} from '../Types/auth';
 import {
   CreateUserService,
   findByEmailWithPasswordService,
@@ -34,7 +34,7 @@ import {
   registerUserDto,
   selfUserDto,
 } from '../Dto/userDto';
-import { AuthRequest, Roles } from '../types';
+import { AuthRequest, Roles } from '../Types';
 import { validationResult } from 'express-validator';
 
 export const registerUser = async (

@@ -1,6 +1,6 @@
 import { Schema } from 'express-validator';
-import { Roles } from '../types';
-import { UpdateUserRequest } from '../types/auth';
+import { Roles } from '../Types';
+import { UpdateUserRequest } from '../Types/auth';
 
 // Common Validators
 export const userNameValidator: Schema = {

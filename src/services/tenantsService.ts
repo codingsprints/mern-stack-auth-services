@@ -4,7 +4,7 @@ import {
   IGetAllTenantsDto,
   ITenantCreateDto,
   TenantQueryParams,
-} from '../types/tenantsType';
+} from '../Types/tenantsType';
 import logger from '../config/logger';
 import { getTenantRepository } from '../utils/common';
 

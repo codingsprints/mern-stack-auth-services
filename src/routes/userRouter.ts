@@ -1,5 +1,5 @@
 import express from 'express';
-import { Roles } from '../types';
+import { Roles } from '../Types';
 import { canAccess } from '../middlewares/canAccess';
 import authenticate from '../middlewares/authenticate';
 import { validate } from '../Validator/ValidationChain';

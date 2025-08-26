@@ -12,7 +12,7 @@ import {
   SelfDtoType,
   UpdateUserDtoType,
   UpdateUserType,
-} from '../types/auth';
+} from '../Types/auth';
 
 export const registerUserDto = (
   user: RegisterDataType,

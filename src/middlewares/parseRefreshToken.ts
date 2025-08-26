@@ -1,6 +1,6 @@
 import { expressjwt } from 'express-jwt';
 import { Request } from 'express';
-import { AuthCookies } from '../types';
+import { AuthCookies } from '../Types';
 import { configENV } from '../config/config';
 
 export default expressjwt({

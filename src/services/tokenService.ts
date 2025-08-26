@@ -3,7 +3,7 @@ import { JwtPayload, sign } from 'jsonwebtoken';
 import { RefreshToken } from '../database/entities/RefreshToken';
 import { getRefreshTokenRepository, isLeapYear } from '../utils/common';
 import { configENV } from '../config/config';
-import { UserCreateType } from '../types/auth';
+import { UserCreateType } from '../Types/auth';
 import { getFileFromS3 } from './s3Service';
 import { NODE_ENV_VAL } from '../utils/constant';
 import logger from '../config/logger';

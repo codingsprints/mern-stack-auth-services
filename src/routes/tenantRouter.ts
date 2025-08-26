@@ -9,7 +9,7 @@ import {
 import tenantsValidator from '../Validator/tenants-validator';
 import { validate } from '../Validator/ValidationChain';
 import authenticate from '../middlewares/authenticate';
-import { Roles } from '../types';
+import { Roles } from '../Types';
 import { canAccess } from '../middlewares/canAccess';
 import listUsersValidator from '../Validator/list-users-validator';
 
