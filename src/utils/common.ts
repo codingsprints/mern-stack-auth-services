@@ -4,6 +4,10 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../database/entities/User';
 import { RefreshToken } from '../database/entities/RefreshToken';
 import { Tenant } from '../database/entities/Tenant';
+import { Request, Response, NextFunction } from 'express';
+import { configENV } from '../config/config';
+import { getFileFromS3 } from '../services/s3Service';
+import logger from '../config/logger';
 
 export const isLeapYear = (year: number): number => {
   // A leap year satisfies the following conditions
@@ -67,4 +71,29 @@ export const getTenantRepository = async (): Promise<Repository<Tenant>> => {
   /* sonarqube-ignore-end */
   await dataSource.initialize();
   return dataSource.getRepository(Tenant);
+};
+
+export const handlerWellKnown = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const bucketName = configENV.awsS3BucketName;
+    const key = configENV.awsS3JWKS;
+
+    if (!bucketName || !key) {
+      throw createHttpError(500, 'S3 bucket name or key not provided');
+    }
+
+    const privateKey = await getFileFromS3(bucketName, key);
+    logger.info('--- s3 connected successfully!');
+
+    // ✅ parse JSON string into object
+    const jwks = JSON.parse(privateKey!);
+
+    res.status(200).json(jwks); // ✅ directly send object
+  } catch (err) {
+    next(err);
+  }
 };
