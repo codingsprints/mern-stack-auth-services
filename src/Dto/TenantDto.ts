@@ -19,9 +19,20 @@ export const tenantCreateDto = (
 
 export const tenantGetAllDto = (
   tenant: IGetAllTenantsDto[],
-): { tenantGetAllDto: IGetAllTenantsDto[] } => {
+  currentPage: number,
+  perPage: number,
+  total: number,
+): {
+  tenantGetAllDto: IGetAllTenantsDto[];
+  currentPage: number;
+  perPage: number;
+  total: number;
+} => {
   return {
     tenantGetAllDto: tenant,
+    currentPage,
+    perPage,
+    total,
   };
 };
 

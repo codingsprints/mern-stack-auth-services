@@ -4,7 +4,6 @@ import { IGetAllTenantsDto } from './tenantsType';
 
 /** register */
 export interface UserData {
-  userName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -23,7 +22,7 @@ export interface RegisterUserRequest extends Request {
 
 export interface RegisterDataType {
   id: number;
-  userName: string;
+
   email: string;
   firstName: string;
   lastName: string;
@@ -38,7 +37,7 @@ export interface RegisterDataType {
 
 export interface RegisterUserDtoType {
   id: number;
-  userName: string;
+
   email: string;
   fullName: string;
   role: Roles;
@@ -58,12 +57,13 @@ export interface RegisterResObjectType {
 /** login */
 export interface LoginUserType {
   id: number;
-  userName: string;
+
   email: string;
   firstName: string;
   lastName: string;
   role: Roles;
   password: string;
+  tenant?: string | null;
 }
 
 export interface LoginUserRequest extends Request {
@@ -73,9 +73,10 @@ export interface LoginUserRequest extends Request {
 export interface LoginDtoType {
   id: number;
   fullName: string;
-  userName: string;
+
   email: string;
   role: string;
+  tenant?: string | null;
 }
 
 export interface LoginResObjectType {
@@ -91,7 +92,7 @@ export interface LoginResObjectType {
 /** self */
 export interface SelfDataType {
   id: number;
-  userName: string;
+
   email: string;
   firstName: string;
   lastName: string;
@@ -103,7 +104,7 @@ export interface SelfDataType {
 export interface SelfDtoType {
   id: number;
   fullName: string;
-  userName: string;
+
   email: string;
   role: string;
   tenant: IGetAllTenantsDto | null;
@@ -122,7 +123,6 @@ export interface SelfResObjectType {
 // refresh token
 export interface RefreshTokenType {
   id: number;
-  userName: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -132,7 +132,7 @@ export interface RefreshTokenType {
 
 export interface RefreshTokenDtoType {
   id: number;
-  userName: string;
+  email: string;
 }
 
 export interface RefreshTokenResObjectType {
@@ -173,7 +173,6 @@ export interface CreateUserRequest extends Request {
 
 // update user
 export interface LimitedUserData {
-  userName: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -187,7 +186,6 @@ export interface UpdateUserRequest extends Request {
 
 export interface UpdateUserType {
   id: number;
-  userName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -197,7 +195,6 @@ export interface UpdateUserType {
 
 export interface UpdateUserDtoType {
   id: number;
-  userName: string;
   fullName: string;
   email: string;
   role: Roles;
@@ -220,11 +217,12 @@ export interface UserQueryParams {
   currentPage: number;
   q: string;
   role: string;
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
 }
 
 export interface GetAllUsersDtoType {
   id: number;
-  userName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -238,11 +236,11 @@ export interface GetAllUsersResObject {
   message: string;
   data: {
     getAllUsersDto: GetAllUsersDtoType[];
+    currentPage: number;
+    perPage: number;
+    total: number;
   };
   error: boolean;
-  total: number;
-  currentPage: number;
-  perPage: number;
 }
 
 // get user by id

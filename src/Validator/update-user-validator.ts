@@ -4,11 +4,10 @@ import {
   tenantIdUpdateValidator,
   emailValidator,
   nameValidator,
-  userNameValidator,
 } from './common-validators';
 
 export default checkSchema({
-  ...userNameValidator,
+  // ...userNameValidator,
   ...emailValidator,
   ...nameValidator('firstName'),
   ...nameValidator('lastName'),

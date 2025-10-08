@@ -35,8 +35,7 @@ export const tenantCreate = async (
   // Validation
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    res.status(400).json({ errors: result.array() });
-    return;
+    return next(createHttpError(400, result.array()[0]?.msg));
   }
   const { name, address } = req.body;
   logger.debug('Request for creating a tenant', req.body);
@@ -77,11 +76,13 @@ export const getAllTenants = async (
       code: 200,
       status: 'success',
       message: 'All tenants fetched!!',
-      data: tenantGetAllDto(tenants),
+      data: tenantGetAllDto(
+        tenants,
+        validatedQuery.currentPage,
+        validatedQuery.perPage,
+        count,
+      ),
       error: false,
-      currentPage: validatedQuery.currentPage as number,
-      perPage: validatedQuery.perPage as number,
-      total: count,
     };
 
     res.status(tenantGetAllResObject.code).json(tenantGetAllResObject);
@@ -132,8 +133,7 @@ export const updateTenant = async (
 ): Promise<void> => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    res.status(400).json({ errors: result.array() });
-    return;
+    return next(createHttpError(400, result.array()[0]?.msg));
   }
 
   try {

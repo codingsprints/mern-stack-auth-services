@@ -3,11 +3,10 @@ import {
   emailValidator,
   nameValidator,
   passwordValidator,
-  userNameValidator,
 } from './common-validators';
 
 export default checkSchema({
-  ...userNameValidator,
+  // ...userNameValidator,
   ...nameValidator('firstName'),
   ...nameValidator('lastName'),
   ...emailValidator,

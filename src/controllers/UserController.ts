@@ -37,14 +37,12 @@ export const CreateUser = async (
   // Validation
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    return next(createHttpError(400, result.array()));
+    return next(createHttpError(400, result.array()[0]?.msg));
   }
 
-  const { userName, firstName, lastName, email, password, tenantId, role } =
-    req.body;
+  const { firstName, lastName, email, password, tenantId, role } = req.body;
   try {
     const user = await CreateUserService({
-      userName,
       firstName,
       lastName,
       email,
@@ -82,10 +80,10 @@ export const UpdateUser = async (
   // Validation
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    return next(createHttpError(400, result.array()));
+    return next(createHttpError(400, result.array()[0]?.msg));
   }
 
-  const { userName, firstName, lastName, email, tenantId, role } = req.body;
+  const { firstName, lastName, email, tenantId, role } = req.body;
   const userId = req.params.id;
 
   if (isNaN(Number(userId))) {
@@ -97,7 +95,6 @@ export const UpdateUser = async (
 
   try {
     await updateUserService(Number(userId), {
-      userName,
       firstName,
       lastName,
       role,
@@ -109,7 +106,6 @@ export const UpdateUser = async (
 
     const resObj: UpdateUserType = {
       id: Number(userId),
-      userName,
       firstName,
       lastName,
       email,
@@ -151,11 +147,16 @@ export const getAllUsers = async (
       code: 200,
       status: 'success',
       message: 'All users fetched successfully!!',
-      data: getAllUsersDto(users),
+      data: getAllUsersDto(
+        users,
+        validatedQuery?.currentPage,
+        validatedQuery?.perPage,
+        count,
+      ),
       error: false,
-      currentPage: validatedQuery.currentPage as number,
-      perPage: validatedQuery.perPage as number,
-      total: count,
+      // currentPage: validatedQuery.currentPage as number,
+      // perPage: validatedQuery.perPage as number,
+      // total: count,
     };
 
     res.status(getAllUsersResObject.code).json(getAllUsersResObject);
@@ -231,7 +232,6 @@ export const deleteUser = async (
         deleteUserDto: {
           email: user.email,
           id: user.id,
-          userName: user.userName,
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,

@@ -7,6 +7,8 @@ import {
 } from '../Types/tenantsType';
 import logger from '../config/logger';
 import { getTenantRepository } from '../utils/common';
+import { Brackets } from 'typeorm';
+import { allowedTenantsSortFields } from '../utils/constant';
 
 export const TenantCreateService = async (
   tenantData: ICreateTenants,
@@ -42,25 +44,41 @@ export const TenantCreateService = async (
 export const TenantGetAllService = async (
   validatedQuery: TenantQueryParams,
 ): Promise<{ tenants: IGetAllTenantsDto[]; count: number } | undefined> => {
-  const tenantRepository = await getTenantRepository();
-
   try {
+    const tenantRepository = await getTenantRepository();
     const queryBuilder = tenantRepository.createQueryBuilder('tenant');
 
+    // 🔎 Search filter
     if (validatedQuery.q) {
       const searchTerm = `%${validatedQuery.q}%`;
-      queryBuilder.where("CONCAT(tenant.name, ' ', tenant.address) ILike :q", {
-        q: searchTerm,
-      });
+      queryBuilder.where(
+        new Brackets((qb) => {
+          qb.where('tenant.name ILike :q', { q: searchTerm }).orWhere(
+            'tenant.address ILike :q',
+            { q: searchTerm },
+          );
+        }),
+      );
     }
 
-    const result = await queryBuilder
+    // 📖 Pagination
+    queryBuilder
       .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
-      .take(validatedQuery.perPage)
-      .orderBy('tenant.id', 'DESC')
-      .getManyAndCount();
+      .take(validatedQuery.perPage);
 
-    const [tenants, count] = result;
+    // 🔄 Sorting
+    const sortBy =
+      allowedTenantsSortFields.includes(
+        validatedQuery?.sortBy ? validatedQuery?.sortBy : '',
+      ) || 'tenant.id'; // default column
+    const sortOrder =
+      validatedQuery.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    queryBuilder.orderBy(String(sortBy), sortOrder as 'ASC' | 'DESC');
+
+    // ✅ Execute query
+    const [tenants, count] = await queryBuilder.getManyAndCount();
+
     return { tenants, count };
   } catch (error) {
     if (error instanceof Error) {

@@ -31,6 +31,8 @@ export interface TenantQueryParams {
   q: string;
   perPage: number;
   currentPage: number;
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
 }
 export interface IGetAllTenantsDto {
   id: number;
@@ -46,11 +48,11 @@ export interface ITenantGetAllResObject {
   message: string;
   data: {
     tenantGetAllDto: IGetAllTenantsDto[];
+    currentPage: number;
+    perPage: number;
+    total: number;
   };
   error: boolean;
-  currentPage: number;
-  perPage: number;
-  total: number;
 }
 
 //get tenant by id

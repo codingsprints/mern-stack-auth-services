@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Roles } from '../../Types';
 import { Tenant } from './Tenant';
 
@@ -7,8 +14,8 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ unique: true })
-  userName!: string;
+  // @Column({ unique: true })
+  // userName!: string;
 
   @Column()
   firstName!: string;
@@ -32,4 +39,10 @@ export class User {
   // multiple tanants and one user
   @ManyToOne(() => Tenant)
   tenant!: Tenant | null;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+
+  @CreateDateColumn()
+  createdAt!: Date;
 }

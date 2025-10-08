@@ -20,7 +20,6 @@ export const registerUserDto = (
   return {
     registerUserDto: {
       id: user.id,
-      userName: user.userName,
       fullName: `${user.firstName} ${user.lastName}`,
       email: user.email,
       role: user.role,
@@ -35,9 +34,9 @@ export const loginUserDto = (
     loginUserDto: {
       id: user.id,
       fullName: `${user.firstName} ${user.lastName}`,
-      userName: user.userName,
       email: user.email,
       role: user.role,
+      tenant: user.tenant ? String(user.tenant) : null,
     },
   };
 };
@@ -47,7 +46,6 @@ export const selfUserDto = (user: SelfDataType): { selfDto: SelfDtoType } => {
     selfDto: {
       id: Number(user?.id),
       fullName: `${user?.firstName} ${user?.lastName}`,
-      userName: user?.userName,
       email: user?.email,
       role: user?.role,
       tenant: user?.tenant,
@@ -61,7 +59,7 @@ export const refreshTokenDto = (
   return {
     refreshTokenDto: {
       id: user.id,
-      userName: user.userName,
+      email: user.email,
     },
   };
 };
@@ -83,7 +81,6 @@ export const updateUserDto = (
   return {
     updateUserDto: {
       id: user.id,
-      userName: user.userName,
       fullName: `${user.firstName} ${user.lastName}`,
       email: user.email,
       role: user.role,
@@ -94,9 +91,20 @@ export const updateUserDto = (
 
 export const getAllUsersDto = (
   users: GetAllUsersDtoType[],
-): { getAllUsersDto: GetAllUsersDtoType[] } => {
+  currentPage: number,
+  perPage: number,
+  total: number,
+): {
+  getAllUsersDto: GetAllUsersDtoType[];
+  currentPage: number;
+  perPage: number;
+  total: number;
+} => {
   return {
     getAllUsersDto: users,
+    currentPage,
+    perPage,
+    total,
   };
 };
 

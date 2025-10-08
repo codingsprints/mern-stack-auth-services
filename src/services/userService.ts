@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 import { User } from '../database/entities/User';
 import bcrypt from 'bcryptjs';
-import { saltRounds } from '../utils/constant';
+import { allowedUserSortFields, saltRounds } from '../utils/constant';
 import {
   LimitedUserData,
   RegisterDataType,
@@ -12,7 +12,6 @@ import { Brackets } from 'typeorm';
 import { getUserRepository } from '../utils/common';
 
 export const CreateUserService = async ({
-  userName,
   firstName,
   lastName,
   email,
@@ -24,12 +23,12 @@ export const CreateUserService = async ({
   // const userRepository = AppDataSource.getRepository(User);
   const userRepository = await getUserRepository();
 
-  // userName unique
-  const uniqueUserName = await userRepository.findOne({
-    where: { userName: userName },
+  // email unique
+  const uniqueUser = await userRepository.findOne({
+    where: { email: email },
   });
-  if (uniqueUserName) {
-    const error = createHttpError(400, 'Username is already exists!');
+  if (uniqueUser) {
+    const error = createHttpError(400, 'email is already exists!');
     throw error;
   }
 
@@ -44,7 +43,6 @@ export const CreateUserService = async ({
   const hashPassword = await bcrypt.hash(password, saltRounds);
   try {
     const user = await userRepository.save({
-      userName,
       firstName,
       lastName,
       email,
@@ -65,22 +63,13 @@ export const CreateUserService = async ({
 
 export const findByEmailWithPasswordService = async (
   email: string,
-  userName: string,
 ): Promise<User> => {
   // sonarqube-ignore-line
   // const userRepository = AppDataSource.getRepository(User);
   const userRepository = await getUserRepository();
   const user = await userRepository.findOne({
-    where: { email: email, userName: userName },
-    select: [
-      'id',
-      'userName',
-      'firstName',
-      'lastName',
-      'email',
-      'role',
-      'password',
-    ],
+    where: { email: email },
+    select: ['id', 'firstName', 'lastName', 'email', 'role', 'password'],
     relations: { tenant: true },
   });
   if (!user) {
@@ -95,27 +84,26 @@ export const findByIdService = async (id: number): Promise<User | null> => {
   // const userRepository = AppDataSource.getRepository(User);
   const userRepository = await getUserRepository();
 
-  // const user = await userRepository
-  //   .createQueryBuilder('user')
-  //   .leftJoinAndSelect('user.tenant', 'tenant') // Include tenant relation
-  //   .where('user.id = :id', { id }) // Match by user id
-  //   .getOne();
+  const user = await userRepository
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.tenant', 'tenant') // Include tenant relation
+    .where('user.id = :id', { id }) // Match by user id
+    .getOne();
 
-  const user = await userRepository.findOne({ where: { id } });
+  // const user = await userRepository.findOne({ where: { id } });
 
   return user;
 };
 
 export const updateUserService = async (
   userId: number,
-  { userName, firstName, lastName, role, email, tenantId }: LimitedUserData,
+  { firstName, lastName, role, email, tenantId }: LimitedUserData,
 ): Promise<void> => {
   try {
     // sonarqube-ignore-line
     // const userRepository = AppDataSource.getRepository(User);
     const userRepository = await getUserRepository();
     await userRepository.update(userId, {
-      userName,
       firstName,
       lastName,
       role,
@@ -138,11 +126,10 @@ export const getAllUsersService = async (
   validatedQuery: UserQueryParams,
 ): Promise<{ users: User[]; count: number }> => {
   try {
-    // sonarqube-ignore-line
-    // const userRepository = AppDataSource.getRepository(User);
     const userRepository = await getUserRepository();
     const queryBuilder = userRepository.createQueryBuilder('user');
 
+    // 🔎 Search filter
     if (validatedQuery.q) {
       const searchTerm = `%${validatedQuery.q}%`;
       queryBuilder.where(
@@ -153,18 +140,32 @@ export const getAllUsersService = async (
         }),
       );
     }
+
+    // 🎭 Role filter
     if (validatedQuery.role) {
-      queryBuilder.andWhere('user.role = :role', { role: validatedQuery.role });
+      queryBuilder.andWhere('user.role = :role', {
+        role: validatedQuery.role,
+      });
     }
 
-    const result = await queryBuilder
-      .leftJoinAndSelect('user.tenant', 'tenant')
+    // 📖 Pagination
+    queryBuilder
+      .leftJoinAndSelect('user.tenant', 'tenant') //left join
       .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
-      .take(validatedQuery.perPage)
-      .orderBy('user.id', 'DESC')
-      .getManyAndCount();
+      .take(validatedQuery.perPage);
 
-    const [users, count] = result;
+    // 🔄 Sorting
+    const sortBy =
+      allowedUserSortFields.includes(
+        validatedQuery?.sortBy ? validatedQuery?.sortBy : '',
+      ) || 'user.id'; // default column
+    const sortOrder =
+      validatedQuery.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    queryBuilder.orderBy(String(sortBy), sortOrder as 'ASC' | 'DESC');
+
+    const [users, count] = await queryBuilder.getManyAndCount();
+
     return { users, count };
   } catch (error) {
     if (error instanceof Error) {

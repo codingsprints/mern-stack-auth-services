@@ -46,12 +46,10 @@ export const registerUser = async (
 
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    res.status(400).json({ errors: result.array() });
-    return;
+    return next(createHttpError(400, result.array()[0]?.msg));
   }
-  const { firstName, lastName, email, password, userName } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   logger.debug('New request to register a user', {
-    userName,
     firstName,
     lastName,
     email,
@@ -61,7 +59,6 @@ export const registerUser = async (
   logger.info('register function calling');
   try {
     const user = await CreateUserService({
-      userName,
       firstName,
       lastName,
       email,
@@ -74,7 +71,6 @@ export const registerUser = async (
     const payload: JwtPayload = {
       sub: String(user?.id),
       role: user.role,
-      userName: user.userName,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -118,20 +114,17 @@ export const loginUser = async (
 ): Promise<void> => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    res.status(400).json({ errors: result.array() });
-    return;
+    return next(createHttpError(400, result.array()[0]?.msg));
   }
-  const { email, password, userName } = req.body;
+  const { email, password } = req.body;
   logger.debug('New request to login a user', {
-    userName,
     email,
     password: '******',
   });
 
   try {
-    //check if Username is exists
     //check if email is exists
-    const existUser = await findByEmailWithPasswordService(email, userName);
+    const existUser = await findByEmailWithPasswordService(email);
 
     //compare password
     const isPasswordMatch = await comparePassword(
@@ -139,16 +132,12 @@ export const loginUser = async (
       existUser?.password,
     );
     if (!isPasswordMatch)
-      throw createHttpError(
-        400,
-        'Username or Email or Password does not match!',
-      );
+      throw createHttpError(400, 'Email or Password does not match!');
 
     //generate token
     const payload: JwtPayload = {
       sub: String(existUser?.id),
       role: existUser?.role,
-      userName: existUser.userName,
       firstName: existUser.firstName,
       lastName: existUser.lastName,
       email: existUser.email,
@@ -169,7 +158,11 @@ export const loginUser = async (
 
     logger.info('user has been logged in', { id: existUser?.id });
 
-    const resObj = { ...existUser, password: '' };
+    const resObj = {
+      ...existUser,
+      password: '',
+      tenant: existUser.tenant ? String(existUser.tenant.id) : null,
+    };
 
     const loginResObject: LoginResObjectType = {
       code: 200,
@@ -221,11 +214,15 @@ export const refresh = async (
     */
 
     //generate token
-    const payload: JwtPayload = { sub: req.auth.sub, role: req.auth.role };
+    const payload: JwtPayload = {
+      sub: req.auth.sub,
+      role: req.auth.role,
+      tenant: req.auth.tenant,
+    };
     const accessToken = await generateAccessToken(payload);
 
-    const existUserName = await findByIdService(Number(req.auth.sub));
-    if (!existUserName) {
+    const existUser = await findByIdService(Number(req.auth.sub));
+    if (!existUser) {
       const error = createHttpError(
         '400',
         'User with the token could not field',
@@ -235,7 +232,7 @@ export const refresh = async (
     }
 
     //new persist refresh token generate
-    const newRefreshToken = await persistRefreshToken(existUserName);
+    const newRefreshToken = await persistRefreshToken(existUser);
 
     logger.info('generate new refresh token');
 
@@ -255,7 +252,7 @@ export const refresh = async (
       code: 200,
       status: 'success',
       message: 'refresh token and access token generated successfully',
-      data: refreshTokenDto(existUserName),
+      data: refreshTokenDto(existUser),
       error: false,
     };
 

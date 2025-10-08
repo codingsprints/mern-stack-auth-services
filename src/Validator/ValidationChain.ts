@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
+import { v4 as uuidV4 } from 'uuid';
 
 // Middleware to handle validation
 export const validate = (validations: ValidationChain[]): RequestHandler => {
@@ -9,6 +10,7 @@ export const validate = (validations: ValidationChain[]): RequestHandler => {
     next: NextFunction,
   ): Promise<void> => {
     try {
+      const errorId = uuidV4();
       // Run all validations
       await Promise.all(validations.map((validation) => validation.run(req)));
 
@@ -16,7 +18,11 @@ export const validate = (validations: ValidationChain[]): RequestHandler => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         res.status(400).json({
-          message: 'Validation failed',
+          id: errorId,
+          path: req.url,
+          method: req.method,
+          type: errors?.array()[0]?.type,
+          message: errors?.array()[0]?.msg,
           errors: errors.array(),
           error: true,
         });

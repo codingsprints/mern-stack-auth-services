@@ -11,7 +11,7 @@ import { validate } from '../Validator/ValidationChain';
 import authenticate from '../middlewares/authenticate';
 import { Roles } from '../Types';
 import { canAccess } from '../middlewares/canAccess';
-import listUsersValidator from '../Validator/list-users-validator';
+import listTenantsValidator from '../Validator/list-tenants-validator';
 
 const router = express.Router();
 
@@ -29,7 +29,7 @@ router.patch(
   validate(tenantsValidator),
   updateTenant,
 );
-router.get('/', listUsersValidator, getAllTenants);
+router.get('/', listTenantsValidator, getAllTenants);
 router.get('/:id', authenticate, canAccess([Roles.ADMIN]), getTenantById);
 router.delete('/:id', authenticate, canAccess([Roles.ADMIN]), deleteTenant);
 

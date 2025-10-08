@@ -1,12 +1,8 @@
 import { checkSchema } from 'express-validator';
-import {
-  emailValidator,
-  passwordValidator,
-  userNameValidator,
-} from './common-validators';
+import { emailValidator, passwordValidator } from './common-validators';
 
 export default checkSchema({
-  ...userNameValidator,
+  // ...userNameValidator,
   ...emailValidator,
   ...passwordValidator,
 });

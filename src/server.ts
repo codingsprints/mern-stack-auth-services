@@ -9,7 +9,7 @@ const startServer = async () => {
   try {
     logger.info('🚀 Starting application...');
     await startApp();
-    logger.info('Database connected successfully!');
+    logger.info('📁 Database connected successfully!');
     app.listen(PORT, async () => {
       logger.info(`🛠️ Application ready...Server running on port: ${PORT}`);
     });

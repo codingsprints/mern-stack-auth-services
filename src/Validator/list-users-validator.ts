@@ -13,6 +13,20 @@ export default checkSchema(
         options: (value: unknown) => value || '',
       },
     },
+    sortBy: {
+      customSanitizer: {
+        options: (value: unknown) => (value ? String(value) : 'createdAt'), // default field
+        // options: (value: unknown) => String(value), // default field
+      },
+    },
+    sortOrder: {
+      customSanitizer: {
+        options: (value: unknown) => {
+          const order = String(value || 'desc').toLowerCase();
+          return ['asc', 'desc'].includes(order) ? order : 'desc'; // default asc
+        },
+      },
+    },
     currentPage: {
       customSanitizer: {
         options: (value) => {
