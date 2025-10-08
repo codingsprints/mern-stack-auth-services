@@ -60,7 +60,7 @@ interface Config {
 
 export const configENV: Config = {
   port: parseInt(process.env.PORT ?? '5001', 10),
-  nodeEnv: process.env.NODE_ENV || 'dev',
+  nodeEnv: process.env.NODE_ENV || 'production',
   baseUrl: process.env.BASE_URL ?? '/pizza-app/auth-service/api/v1',
   hostname: process.env.HOSTNAME ?? 'localhost',
 
