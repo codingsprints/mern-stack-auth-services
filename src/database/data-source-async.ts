@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { configENV } from '../config/config';
 import logger from '../config/logger';
 import createHttpError from 'http-errors';
+import { getFileFromS3 } from '../services/s3Service';
 // import { getFileFromS3 } from '../services/s3Service';
 
 export const AppDataSource = async (): Promise<DataSource | undefined> => {
@@ -10,10 +11,10 @@ export const AppDataSource = async (): Promise<DataSource | undefined> => {
 
   try {
     // Load the SSL certificate synchronously
-    // const rdsSSL = await getFileFromS3(
-    //   configENV.awsS3BucketName,
-    //   configENV.awsS3RdsSSL,
-    // );
+    const rdsSSL = await getFileFromS3(
+      configENV.awsS3BucketName,
+      configENV.awsS3RdsSSL,
+    );
     // Create the DataSource instance
     const dataSource = new DataSource({
       type: 'postgres',
@@ -39,7 +40,9 @@ export const AppDataSource = async (): Promise<DataSource | undefined> => {
       //       ca: rdsSSL,
       //       rejectUnauthorized: false,
       //     },
-      ssl: false,
+      ssl: {
+        ca: rdsSSL,
+      },
     });
 
     return dataSource;

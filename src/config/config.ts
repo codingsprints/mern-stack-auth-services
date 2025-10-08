@@ -13,7 +13,7 @@ dotenv.config({
   ),
 });
 
-if (process.env.NODE_ENV === 'prod') {
+if (process.env.NODE_ENV === 'production') {
   console.log('-----production env-----');
 }
 
@@ -56,6 +56,9 @@ interface Config {
   awsS3RdsSSL: string;
   awsS3URI: string;
   awsS3JWKS: string;
+  clientUI: string;
+  adminUI: string;
+  mainDomain: string;
 }
 
 export const configENV: Config = {
@@ -97,4 +100,9 @@ export const configENV: Config = {
   awsS3RdsSSL: process.env.AWS_RDS_SSL! ?? '',
   awsS3URI: process.env.AWS_S3_URI!,
   awsS3JWKS: process.env.AWS_S3_JWKS! ?? '',
+
+  //domain
+  clientUI: process.env.CLIENT_UI_DOMAIN ?? '',
+  adminUI: process.env.ADMIN_UI_DOMAIN ?? '',
+  mainDomain: process.env.MAIN_DOMAIN ?? '',
 };

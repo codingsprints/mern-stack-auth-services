@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { configENV } from '../config/config';
 
 export const setResponseCookies = (
   res: Response,
@@ -7,14 +8,14 @@ export const setResponseCookies = (
 ): void => {
   //Add token to cookie
   res.cookie('accessToken', accessToken, {
-    domain: 'localhost',
+    domain: configENV.mainDomain,
     httpOnly: true, //very important
     secure: true,
     sameSite: 'strict',
     maxAge: 1000 * 60 * 60, // cookie expires in 1 hours
   });
   res.cookie('refreshToken', refreshToken, {
-    domain: 'localhost',
+    domain: configENV.mainDomain,
     httpOnly: true, //very important
     secure: true,
     sameSite: 'strict',

@@ -10,8 +10,8 @@ export const AppDataSource = new DataSource({
   database: configENV.dbDatabase,
   synchronize: true,
   logging: false,
-  entities: ['dist/src/database/entities/*.{ts,js}'],
-  migrations: ['dist/src/database/migrations/*.{ts,js}'],
+  entities: ['src/database/entities/*.{ts,js}'],
+  migrations: ['src/database/migrations/*.{ts,js}'],
   ssl: {
     // ca: configENV.rdsSSL.replace(/\\n/g, '\n'),
     ca: configENV.rdsSSL,

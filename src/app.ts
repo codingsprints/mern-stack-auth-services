@@ -8,6 +8,7 @@ import userRouter from './routes/userRouter';
 import { globalErrorHandler } from './middlewares/globalErrorHandler';
 import { handlerWellKnown } from './utils/common';
 import path from 'path';
+import { configENV } from './config/config';
 
 const app = express();
 
@@ -15,9 +16,11 @@ app.use(express.static('public'));
 app.use(cookieParser());
 app.use(express.json());
 
+const ALLOWED_DOMAINS = [configENV.adminUI, configENV.clientUI];
+
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: ALLOWED_DOMAINS as string[],
     credentials: true,
   }),
 );
