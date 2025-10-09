@@ -8,13 +8,14 @@ export const AppDataSource = new DataSource({
   username: configENV.dbUsername,
   password: configENV.dbPassword,
   database: configENV.dbDatabase,
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: ['src/database/entities/*.{ts,js}'],
   migrations: ['src/database/migrations/*.{ts,js}'],
-  ssl: {
-    // ca: configENV.rdsSSL.replace(/\\n/g, '\n'),
-    ca: configENV.rdsSSL,
-    rejectUnauthorized: false,
-  },
+  // ssl: {
+  //   // ca: configENV.rdsSSL.replace(/\\n/g, '\n'),
+  //   // ca: configENV.rdsSSL,
+  //   // rejectUnauthorized: false,
+  // },
+  ssl: false,
 });
