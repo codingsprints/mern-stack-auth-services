@@ -36,7 +36,7 @@ app.use(
 app.use('/well-known', handlerWellKnown);
 
 app.get(`/`, async (req: Request, res: Response) => {
-  res.send('Welcome to the API!!!');
+  res.send('Welcome to Auth Service API from Kubernetes!');
 });
 
 app.use(`/auth`, authRouter);
