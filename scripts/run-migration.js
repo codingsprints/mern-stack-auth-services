@@ -1,4 +1,5 @@
 // Import the child_process module
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { exec } = require('child_process');
 // import { exec } from 'child_process';
 
