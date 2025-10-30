@@ -35,7 +35,7 @@ router.patch(
 router.get(
   '/',
   authenticate,
-  canAccess([Roles.ADMIN, Roles.MANAGER]),
+  canAccess([Roles.ADMIN, Roles.MANAGER, Roles.CUSTOMER]),
   listUsersValidator,
   getAllUsers,
 );
@@ -43,7 +43,7 @@ router.get(
 router.get(
   '/:id',
   authenticate,
-  canAccess([Roles.ADMIN, Roles.MANAGER]),
+  canAccess([Roles.ADMIN, Roles.MANAGER, Roles.CUSTOMER]),
   getUserById,
 );
 
