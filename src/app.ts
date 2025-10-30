@@ -39,9 +39,9 @@ app.get(`/`, async (req: Request, res: Response) => {
   res.send('Welcome to Auth Service API from Kubernetes!');
 });
 
-app.use(`/pizza/auth/api/v1/auth`, authRouter);
-app.use(`/pizza/auth/api/v1/tenants`, tenantRouter);
-app.use(`/pizza/auth/api/v1/users`, userRouter);
+app.use(`/auth`, authRouter);
+app.use(`/tenants`, tenantRouter);
+app.use(`/users`, userRouter);
 
 // global error handler
 app.use(globalErrorHandler);
