@@ -24,3 +24,4 @@ const jwks = { keys: [jwk] };
 const outputPath = path.resolve(__dirname, '../public/.well-known/jwks.json');
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, JSON.stringify(jwks, null, 2));
+console.log('JWKS:', JSON.stringify(jwks, null, 2));

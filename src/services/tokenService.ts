@@ -1,4 +1,6 @@
 import createHttpError from 'http-errors';
+import fs from 'fs';
+import path from 'path';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import { RefreshToken } from '../database/entities/RefreshToken';
 import { getRefreshTokenRepository, isLeapYear } from '../utils/common';
@@ -14,7 +16,14 @@ export const generateAccessToken = async (
   let privateKey: string | undefined;
 
   try {
-    if (configENV.nodeEnv !== NODE_ENV_VAL.TEST) {
+    console.log(path.resolve(__dirname, '../../certs/private.pem'));
+    if (configENV.nodeEnv === NODE_ENV_VAL.DEVELOPMENT) {
+      privateKey = fs.readFileSync(
+        path.resolve(__dirname, '../../certs/private.pem'),
+        'utf-8',
+      );
+      console.log(privateKey);
+    } else if (configENV.nodeEnv === NODE_ENV_VAL.PRODUCTION) {
       // Fetch the private key from S3
       const bucketName = configENV.awsS3BucketName;
       const key = configENV.awsS3URI;

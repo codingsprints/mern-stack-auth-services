@@ -13,11 +13,11 @@ const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
   },
 });
 
+console.log('Private Key:', privateKey);
+console.log('Public Key:', publicKey);
+
 // Save keys in certs folder
 fs.writeFileSync('certs/private.pem', privateKey);
 fs.writeFileSync('certs/public.pem', publicKey);
-
-// console.log('Private Key:', privateKey);
-// console.log('Public Key:', publicKey);
 
 console.log('✅ RSA Key pair generated successfully.');
